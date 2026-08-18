@@ -6,6 +6,7 @@
 
   <!-- PWA manifest -->
   <link rel="manifest" href="manifest.json">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body { font-family: sans-serif; text-align: center; margin-top: 50px; }
@@ -43,7 +44,7 @@
     // ----------------------
     function inc() {
       model.count++;
-      notify(); // Modelが変わったので通知
+      notify();
     }
 
     function reset() {
@@ -64,6 +65,14 @@
 
     // 初期描画
     notify();
+  </script>
+
+  <!-- Service Worker 登録 -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .catch(err => console.error('SW registration failed:', err));
+    }
   </script>
 
 </body>
