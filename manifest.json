@@ -1,4 +1,8 @@
 {
+  "name": "Basket Foul Counter",
+  "short_name": "BFC",
+  "display": "standalone",
+  "start_url": "./",
   "icons": [
     {
       "src": "icon-DFC.png",
