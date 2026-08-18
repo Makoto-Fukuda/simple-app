@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple MVVM App</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    #count { font-size: 3rem; margin: 20px; display: block; }
+    button { font-size: 1.5rem; margin: 10px; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+
+  <span id="count"></span>
+  <button id="inc">＋1</button>
+  <button id="reset">リセット</button>
+
+  <script>
+    // ----------------------
+    // Model（データ本体）
+    // ----------------------
+    let model = { count: 0 };
+
+    // 通知を受け取る関数を登録する配列
+    const listeners = [];
+
+    // Viewが通知を受け取るための登録関数
+    function subscribe(listener) {
+      listeners.push(listener);
+    }
+
+    // Modelが変わったら通知を発火する
+    function notify() {
+      listeners.forEach(l => l(model));
+    }
+
+    // ----------------------
+    // ViewModel（UI操作 → Model更新）
+    // ----------------------
+    function inc() {
+      model.count++;
+      notify(); // Modelが変わったので通知
+    }
+
+    function reset() {
+      model.count = 0;
+      notify();
+    }
+
+    // ----------------------
+    // View（UI表示）
+    // ----------------------
+    subscribe(m => {
+      document.getElementById('count').textContent = m.count;
+    });
+
+    // UIイベント登録
+    document.getElementById('inc').onclick = inc;
+    document.getElementById('reset').onclick = reset;
+
+    // 初期描画
+    notify();
+  </script>
+
+</body>
+</html>
