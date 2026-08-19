@@ -9,20 +9,14 @@ const FILES_TO_CACHE = [
   "./style.css",
   "./manifest.json",
   "./sw.js",
-
-  // JS
   "./stateMachine.js",
-
-  // config
   "./config/game.json",
-  "./config/players.json",
-  "./config/sound.json",
-  "./config/stateMachine.json",
-  "./config/teams.json",
   "./config/ui.json",
-
-  // icons
-  "./icons/icon-DFC.png"
+  "./config/sound.json",
+  "./config/teams.json",
+  "./config/players.json",
+  "./icons/icon-192.png",
+  "./icons/icon-512.png"
 ];
 
 // --------------------------------------
