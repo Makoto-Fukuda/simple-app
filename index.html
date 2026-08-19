@@ -4,18 +4,11 @@
   <meta charset="UTF-8">
   <title>Basket Foul Counter</title>
 
-  <!-- PWA manifest -->
   <link rel="manifest" href="manifest.json">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- 外部CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <!-- ========================= -->
-  <!-- GameState（第1階層）     -->
-  <!-- ========================= -->
 
   <div id="preGame" class="screen">
     <h2>試合前</h2>
@@ -33,10 +26,6 @@
 
   <div id="inGame" class="screen hidden">
     <h2>試合中</h2>
-
-    <!-- ========================= -->
-    <!-- OperationMode（第2階層） -->
-    <!-- ========================= -->
 
     <div id="foulMode" class="mode hidden">
       <h3>ファール操作</h3>
@@ -69,10 +58,6 @@
     <button id="startOTBtn">延長戦</button>
   </div>
 
-  <!-- ========================= -->
-  <!-- ConfirmState（第3階層） -->
-  <!-- ========================= -->
-
   <div id="confirmFoul" class="dialog hidden">
     <h3>ファール確認</h3>
     <p id="foulSummary"></p>
@@ -86,9 +71,6 @@
     <button id="confirmSubstitutionOK">OK</button>
   </div>
 
-  <!-- ========================= -->
-  <!-- JS読み込み（config対応） -->
-  <!-- ========================= -->
   <script type="module">
     import { StateMachine } from "./stateMachine.js";
 
@@ -98,41 +80,32 @@
       const sound = await (await fetch("./config/sound.json")).json();
       const teams = await (await fetch("./config/teams.json")).json();
       const players = await (await fetch("./config/players.json")).json();
+      const stateMachineConfig = await (await fetch("./config/stateMachine.json")).json();
 
-      return { game, ui, sound, teams, players };
+      return { game, ui, sound, teams, players, stateMachineConfig };
     }
 
     loadAllConfigs().then(cfg => {
-      const sm = new StateMachine(cfg);
+      const sm = new StateMachine(cfg.stateMachineConfig);
 
-      // ============================
-      // UI更新（誠の構造に完全一致）
-      // ============================
       function updateUI() {
         const st = sm.getState();
 
-        // GameState
         document.querySelectorAll(".screen").forEach(s => s.classList.add("hidden"));
         document.getElementById(st.game).classList.remove("hidden");
 
-        // OperationMode
         document.querySelectorAll(".mode").forEach(m => m.classList.add("hidden"));
         if (st.operation) {
           document.getElementById(st.operation + "Mode").classList.remove("hidden");
         }
 
-        // ConfirmState
         document.querySelectorAll(".dialog").forEach(d => d.classList.add("hidden"));
         if (st.confirm) {
           document.getElementById(st.confirm).classList.remove("hidden");
         }
       }
 
-      // ============================
-      // UIイベント接続（完全版）
-      // ============================
-
-      // --- GameState ---
+      // GameState
       document.getElementById("startGameBtn").onclick = () => {
         sm.transitionGame("startGame");
         updateUI();
@@ -149,12 +122,12 @@
       };
 
       document.getElementById("halfTimeNextBtn").onclick = () => {
-        sm.transitionGame("halfTimeNext");
+        sm.transitionGame("resume");
         updateUI();
       };
 
       document.getElementById("finishGameBtn").onclick = () => {
-        sm.transitionGame("finishGame");
+        sm.transitionGame("endGame");
         updateUI();
       };
 
@@ -163,37 +136,35 @@
         updateUI();
       };
 
-      // --- OperationMode ---
+      // OperationMode（ファールモードに入ってから confirm）
       document.querySelectorAll(".teamSelect").forEach(btn => {
         btn.onclick = () => {
-          const team = btn.dataset.team;
-          sm.transitionOperation("selectTeam", { team });
+          sm.enterOperationMode("foulMode");
+          sm.transitionOperation("confirm");
           updateUI();
         };
       });
 
-      // --- ConfirmState ---
+      // ConfirmState
       document.getElementById("confirmFoulOK").onclick = () => {
-        sm.transitionConfirm("confirmFoulOK");
+        sm.transitionConfirm("ok");
         updateUI();
       };
 
       document.getElementById("confirmFoulFix").onclick = () => {
-        sm.transitionConfirm("confirmFoulFix");
+        sm.transitionConfirm("fix");
         updateUI();
       };
 
       document.getElementById("confirmSubstitutionOK").onclick = () => {
-        sm.transitionConfirm("confirmSubstitutionOK");
+        sm.transitionConfirm("ok");
         updateUI();
       };
 
-      // 初期描画
       updateUI();
     });
   </script>
 
-  <!-- Service Worker 登録 -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js')
