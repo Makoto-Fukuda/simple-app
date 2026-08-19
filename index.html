@@ -10,6 +10,7 @@
 </head>
 <body>
 
+  <!-- 試合前 -->
   <div id="preGame" class="screen">
     <h2>試合前</h2>
     <input id="teamAName" placeholder="チームA名"><br>
@@ -17,24 +18,58 @@
     <button id="startGameBtn">試合開始</button>
   </div>
 
+  <!-- 各Q開始前（選手選択） -->
   <div id="preQuarter" class="screen hidden">
     <h2>各Q開始前</h2>
-    <p>出場選手5名を選択してください</p>
-    <div id="playerSelectArea"></div>
-    <button id="startQuarterBtn">Q開始</button>
+
+    <!-- A/B チーム選択 -->
+    <div id="teamSelectArea">
+      <button class="teamSelectBtn" data-team="A">Aチーム</button>
+      <button class="teamSelectBtn" data-team="B">Bチーム</button>
+    </div>
+
+    <!-- 選手選択エリア -->
+    <div id="playerSelectArea" class="hidden">
+      <h3 id="teamSelectTitle"></h3>
+
+      <!-- 選択中ゼッケン表示枠 -->
+      <p>選択中の出場選手（最大5名） <span id="selectedCountLabel"></span></p>
+      <div id="onCourtSelectArea"></div>
+
+      <p>控え選手</p>
+      <div id="benchSelectArea"></div>
+
+      <button id="clearSelectionBtn" class="small danger">選択クリア</button>
+      <!-- ★ ここにあった startQuarterBtn は削除（固定配置のボタンと重複するため） -->
+    </div>
   </div>
 
+  <!-- 試合中 -->
   <div id="inGame" class="screen hidden">
-    <h2>試合中</h2>
+    <h2>試合中 <span id="currentQuarterLabel"></span></h2>
 
-    <!-- ★ ファール操作ボタンを追加 -->
-    <button id="openFoulModeBtn">ファール操作</button>
+    <div id="foulMode" class="mode">
+      <div class="teamButtons">
+        <button class="teamSelect big red" data-team="A">赤チーム</button>
+        <button class="teamSelect big blue" data-team="B">青チーム</button>
+      </div>
 
-    <div id="foulMode" class="mode hidden">
-      <h3>ファール操作</h3>
-      <button class="teamSelect" data-team="A">赤チーム</button>
-      <button class="teamSelect" data-team="B">青チーム</button>
-      <div id="jerseyList"></div>
+      <div class="utilityButtons">
+        <button id="cancelGameBtn" class="small danger">試合キャンセル</button>
+        <button id="showListBtn" class="small info">一覧表示</button>
+      </div>
+
+      <!-- チームファール表示（視覚強調用） -->
+      <div class="teamFoulsDisplay">
+        <span id="teamAFoulsLabel">A: 0</span>
+        <span id="teamBFoulsLabel">B: 0</span>
+      </div>
+    </div>
+
+    <div id="listView" class="mode hidden">
+      <h3>ファール一覧</h3>
+      <div id="playerFoulList"></div>
+      <button id="closeListBtn" class="small info">閉じる</button>
     </div>
 
     <div id="substitutionMode" class="mode hidden">
@@ -49,18 +84,21 @@
     </div>
   </div>
 
+  <!-- ハーフタイム -->
   <div id="halfTime" class="screen hidden">
     <h2>ハーフタイム</h2>
     <p>チームファールは自動リセットされます</p>
     <button id="halfTimeNextBtn">次へ</button>
   </div>
 
+  <!-- 試合終了 -->
   <div id="postGame" class="screen hidden">
     <h2>試合終了</h2>
     <button id="finishGameBtn">終了</button>
     <button id="startOTBtn">延長戦</button>
   </div>
 
+  <!-- ファール確認 -->
   <div id="confirmFoul" class="dialog hidden">
     <h3>ファール確認</h3>
     <p id="foulSummary"></p>
@@ -68,141 +106,359 @@
     <button id="confirmFoulFix">修正</button>
   </div>
 
+  <!-- 交代確認 -->
   <div id="confirmSubstitution" class="dialog hidden">
     <h3>交代確認</h3>
     <p id="subSummary"></p>
     <button id="confirmSubstitutionOK">OK</button>
   </div>
 
+  <!-- 戻る確認 -->
+  <div id="confirmBack" class="dialog hidden">
+    <h3>画面を戻しますか？</h3>
+    <p>必要に応じてデータがリセットされます。</p>
+    <button id="confirmBackOK">OK</button>
+    <button id="confirmBackCancel">キャンセル</button>
+  </div>
+
+  <!-- 5名未満での試合開始確認 -->
+  <div id="confirmStartUnderFive" class="dialog hidden">
+    <h3>選手が5名未満です</h3>
+    <p>この人数で試合を開始しますか？</p>
+    <button id="confirmStartUnderFiveOK">OK</button>
+    <button id="confirmStartUnderFiveCancel">キャンセル</button>
+  </div>
+
+  <!-- Q開始ボタン（戻るボタンの上に固定配置） -->
+  <button id="startQuarterBtn" class="small primary startQuarterButton hidden">Q開始</button>
+
+  <!-- 画面下端の戻るボタン -->
+  <button id="backBtn" class="small info backButton">戻る</button>
+
+  <!-- ================================
+       メインロジック
+  ================================= -->
   <script type="module">
     import { StateMachine } from "./stateMachine.js";
 
     async function loadAllConfigs() {
-      const game = await (await fetch("./config/game.json")).json();
       const ui = await (await fetch("./config/ui.json")).json();
       const sound = await (await fetch("./config/sound.json")).json();
       const teams = await (await fetch("./config/teams.json")).json();
       const players = await (await fetch("./config/players.json")).json();
       const stateMachineConfig = await (await fetch("./config/stateMachine.json")).json();
 
-      console.log("[DEBUG] Loaded stateMachine.json:", stateMachineConfig);
-
-      return { game, ui, sound, teams, players, stateMachineConfig };
+      return { ui, sound, teams, players, stateMachineConfig };
     }
 
     loadAllConfigs().then(cfg => {
       const sm = new StateMachine(cfg.stateMachineConfig);
 
-      console.log("[DEBUG] Initial StateMachine state:", sm.getState());
-
+      // ================================
+      // UI更新
+      // ================================
       function updateUI() {
         const st = sm.getState();
-        console.log("[DEBUG] updateUI() called. Current state:", st);
 
-        // GameState
+        // 画面・モード・ダイアログを一旦全部隠す
         document.querySelectorAll(".screen").forEach(s => s.classList.add("hidden"));
-        console.log("[DEBUG] Showing screen:", st.game);
-        document.getElementById(st.game).classList.remove("hidden");
-
-        // OperationMode
         document.querySelectorAll(".mode").forEach(m => m.classList.add("hidden"));
+        document.querySelectorAll(".dialog").forEach(d => d.classList.add("hidden"));
+
+        // GameState 表示
+        const screen = document.getElementById(st.game);
+        if (screen) screen.classList.remove("hidden");
+
+        // OperationMode 表示
         if (st.operation) {
-          console.log("[DEBUG] Showing operation mode:", st.operation);
-          document.getElementById(st.operation).classList.remove("hidden");
+          const mode = document.getElementById(st.operation);
+          if (mode) mode.classList.remove("hidden");
         }
 
-        // ConfirmState
-        document.querySelectorAll(".dialog").forEach(d => d.classList.add("hidden"));
+        // ConfirmState 表示
         if (st.confirm) {
-          console.log("[DEBUG] Showing confirm dialog:", st.confirm);
-          document.getElementById(st.confirm).classList.remove("hidden");
+          const dlg = document.getElementById(st.confirm);
+          if (dlg) dlg.classList.remove("hidden");
+        }
+
+        // Qラベル
+        const qLabel = document.getElementById("currentQuarterLabel");
+        if (qLabel) qLabel.textContent = sm.currentQuarterLabel || "";
+
+        // チームファール表示
+        const teamAFoulsLabel = document.getElementById("teamAFoulsLabel");
+        const teamBFoulsLabel = document.getElementById("teamBFoulsLabel");
+        if (teamAFoulsLabel && sm.teams && sm.teams.teams) {
+          teamAFoulsLabel.textContent = `A: ${sm.teams.teams.teamA.teamFouls}`;
+        }
+        if (teamBFoulsLabel && sm.teams && sm.teams.teams) {
+          teamBFoulsLabel.textContent = `B: ${sm.teams.teams.teamB.teamFouls}`;
         }
       }
 
-      // GameState
-      document.getElementById("startGameBtn").onclick = () => {
-        console.log("[DEBUG] startGameBtn clicked");
-        sm.transitionGame("startGame");
-        console.log("[DEBUG] After transitionGame(startGame):", sm.getState());
-        updateUI();
+      // ================================
+      // 選手選択 UI
+      // ================================
+      document.querySelectorAll(".teamSelectBtn").forEach(btn => {
+        btn.onclick = () => {
+          const teamSide = btn.dataset.team;
+          sm.selectTeamSide(teamSide);
+
+          document.getElementById("teamSelectArea").classList.add("hidden");
+          document.getElementById("playerSelectArea").classList.remove("hidden");
+
+          document.getElementById("teamSelectTitle").textContent =
+            teamSide === "A" ? "Aチーム選手選択" : "Bチーム選手選択";
+
+          renderPlayerSelectUI(teamSide);
+        };
+      });
+
+      function renderPlayerSelectUI(teamSide) {
+        const onCourtArea = document.getElementById("onCourtSelectArea");
+        const benchArea = document.getElementById("benchSelectArea");
+        const selectedCountLabel = document.getElementById("selectedCountLabel");
+
+        onCourtArea.innerHTML = "";
+        benchArea.innerHTML = "";
+
+        // 背景色切り替え
+        onCourtArea.classList.remove("teamA-bg", "teamB-bg");
+        benchArea.classList.remove("teamA-bg", "teamB-bg");
+        if (teamSide === "A") {
+          onCourtArea.classList.add("teamA-bg");
+          benchArea.classList.add("teamA-bg");
+        } else {
+          onCourtArea.classList.add("teamB-bg");
+          benchArea.classList.add("teamB-bg");
+        }
+
+        const selectedList = teamSide === "A"
+          ? sm.selectedPlayers_A
+          : sm.selectedPlayers_B;
+
+        // 選択中ゼッケン表示
+        selectedList.forEach(num => {
+          const div = document.createElement("div");
+          div.className = "selectedNumber";
+          div.textContent = num;
+          onCourtArea.appendChild(div);
+        });
+
+        if (selectedCountLabel) {
+          selectedCountLabel.textContent = `選択中：${selectedList.length} / 5`;
+        }
+
+        // 前Q出場選手を先頭に
+        const previousOnCourt = sm.players.players
+          .filter(p => p.teamSide === teamSide && p.isOnCourt)
+          .map(p => p.jerseyNumber);
+
+        const benchNumbers = [];
+        previousOnCourt.forEach(num => benchNumbers.push(num));
+        for (let i = 1; i <= 99; i++) {
+          if (!previousOnCourt.includes(i)) benchNumbers.push(i);
+        }
+
+        benchNumbers.forEach(num => {
+          const isSelected = selectedList.includes(num);
+          benchArea.appendChild(createPlayerButton(num, isSelected));
+        });
+
+        // Q開始ボタンの表示更新
+        updateStartQuarterButton();
+      }
+
+      function createPlayerButton(number, isSelected = false) {
+        const btn = document.createElement("div");
+        btn.className = isSelected ? "playerItem onCourt" : "playerItem bench";
+        btn.textContent = number;
+
+        btn.onclick = () => {
+          const beforeList = sm.selectedTeamSide === "A"
+            ? [...sm.selectedPlayers_A]
+            : [...sm.selectedPlayers_B];
+
+          sm.toggleSelectPlayer(number);
+
+          const afterList = sm.selectedTeamSide === "A"
+            ? sm.selectedPlayers_A
+            : sm.selectedPlayers_B;
+
+          const wasSelected = beforeList.includes(number);
+          const isSelectedNow = afterList.includes(number);
+
+          if (!wasSelected && isSelectedNow) {
+            btn.classList.remove("bench");
+            btn.classList.add("onCourt");
+          } else if (wasSelected && !isSelectedNow) {
+            btn.classList.remove("onCourt");
+            btn.classList.add("bench");
+          }
+
+          renderPlayerSelectUI(sm.selectedTeamSide);
+          updateStartQuarterButton();
+        };
+
+        return btn;
+      }
+
+      function updateStartQuarterButton() {
+        const btn = document.getElementById("startQuarterBtn");
+        const listA = sm.selectedPlayers_A;
+        const listB = sm.selectedPlayers_B;
+
+        // AとBが1名以上ならボタン表示
+        if (listA.length >= 1 && listB.length >= 1) {
+          btn.classList.remove("hidden");
+        } else {
+          btn.classList.add("hidden");
+        }
+      }
+
+      document.getElementById("clearSelectionBtn").onclick = () => {
+        const teamSide = sm.selectedTeamSide;
+        if (!teamSide) return;
+
+        if (teamSide === "A") {
+          sm.selectedPlayers_A = [];
+        } else {
+          sm.selectedPlayers_B = [];
+        }
+        sm.saveState();
+
+        renderPlayerSelectUI(teamSide);
+        updateStartQuarterButton();
       };
 
       document.getElementById("startQuarterBtn").onclick = () => {
-        console.log("[DEBUG] startQuarterBtn clicked");
-        sm.transitionGame("startQuarter");
-        console.log("[DEBUG] After transitionGame(startQuarter):", sm.getState());
+        const listA = sm.selectedPlayers_A;
+        const listB = sm.selectedPlayers_B;
+
+        // 5名未満なら確認画面へ
+        if (listA.length < 5 || listB.length < 5) {
+          sm.currentConfirmState = "confirmStartUnderFive";
+          sm.saveState();
+          updateUI();
+          return;
+        }
+
+        // 5名そろっている場合は即開始
+        sm.commitSelectedPlayers();
+        updateUI();
+      };
+
+      // ================================
+      // 試合進行
+      // ================================
+      document.getElementById("startGameBtn").onclick = () => {
+        sm.transitionGame("startGame");
         updateUI();
       };
 
       document.getElementById("advanceQuarterBtn").onclick = () => {
-        console.log("[DEBUG] advanceQuarterBtn clicked");
         sm.transitionGame("endQuarter");
-        console.log("[DEBUG] After transitionGame(endQuarter):", sm.getState());
         updateUI();
       };
 
       document.getElementById("halfTimeNextBtn").onclick = () => {
-        console.log("[DEBUG] halfTimeNextBtn clicked");
-        sm.transitionGame("resume");
-        console.log("[DEBUG] After transitionGame(resume):", sm.getState());
+        sm.transitionGame("startQuarter");
         updateUI();
       };
 
       document.getElementById("finishGameBtn").onclick = () => {
-        console.log("[DEBUG] finishGameBtn clicked");
-        sm.transitionGame("endGame");
-        console.log("[DEBUG] After transitionGame(endGame):", sm.getState());
+        sm.transitionGame("finishGame");
+        localStorage.clear();
         updateUI();
       };
 
       document.getElementById("startOTBtn").onclick = () => {
-        console.log("[DEBUG] startOTBtn clicked");
         sm.transitionGame("startOT");
-        console.log("[DEBUG] After transitionGame(startOT):", sm.getState());
         updateUI();
       };
 
-      // ★ ファール操作モードを開くボタン
-      document.getElementById("openFoulModeBtn").onclick = () => {
-        console.log("[DEBUG] openFoulModeBtn clicked");
-        sm.enterOperationMode("foulMode");
-        console.log("[DEBUG] After enterOperationMode(foulMode):", sm.getState());
-        updateUI();
-      };
-
-      // OperationMode（チーム選択 → confirmFoul へ）
-      document.querySelectorAll(".teamSelect").forEach(btn => {
+      // ================================
+      // ファール関連
+      // ================================
+      document.querySelectorAll(".teamSelect.big").forEach(btn => {
         btn.onclick = () => {
-          console.log("[DEBUG] teamSelect clicked:", btn.dataset.team);
-          // ここでは既に foulMode にいる前提なので confirm へ
-          sm.transitionOperation("confirm");
-          console.log("[DEBUG] After transitionOperation(confirm):", sm.getState());
+          // ★ confirmBack 表示中は他操作を禁止
+          if (sm.currentConfirmState === "confirmBack") return;
+          const teamSide = btn.dataset.team;
+          sm.selectedTeamSide = teamSide;
+          sm.enterOperationMode("foulMode");
           updateUI();
         };
       });
 
-      // ConfirmState
+      document.getElementById("showListBtn").onclick = () => {
+        sm.enterOperationMode("listView");
+        updateUI();
+      };
+
+      document.getElementById("closeListBtn").onclick = () => {
+        sm.enterOperationMode("foulMode");
+        updateUI();
+      };
+
       document.getElementById("confirmFoulOK").onclick = () => {
-        console.log("[DEBUG] confirmFoulOK clicked");
         sm.transitionConfirm("ok");
-        console.log("[DEBUG] After transitionConfirm(ok):", sm.getState());
         updateUI();
       };
 
       document.getElementById("confirmFoulFix").onclick = () => {
-        console.log("[DEBUG] confirmFoulFix clicked");
         sm.transitionConfirm("fix");
-        console.log("[DEBUG] After transitionConfirm(fix):", sm.getState());
         updateUI();
       };
 
       document.getElementById("confirmSubstitutionOK").onclick = () => {
-        console.log("[DEBUG] confirmSubstitutionOK clicked");
         sm.transitionConfirm("ok");
-        console.log("[DEBUG] After transitionConfirm(ok):", sm.getState());
         updateUI();
       };
 
+      // ================================
+      // 戻るボタン
+      // ================================
+      document.getElementById("backBtn").onclick = () => {
+        // ★ 今の状態を「直前状態」として保存してから confirmBack を出す
+        sm.savePreviousState();
+        sm.currentConfirmState = "confirmBack";
+        sm.saveState();
+        updateUI();
+      };
+
+      document.getElementById("confirmBackOK").onclick = () => {
+        // ★ previousState から復元し、confirm をクリア
+        if (sm.previousState) {
+          sm.currentGameState = sm.previousState.game;
+          sm.currentOperationMode = sm.previousState.operation;
+          sm.currentConfirmState = sm.previousState.confirm;
+        }
+        // 戻る確認ダイアログは閉じる
+        sm.currentConfirmState = null;
+        sm.saveState();
+        updateUI();
+      };
+
+      document.getElementById("confirmBackCancel").onclick = () => {
+        // ★ FSM に任せず、単純にダイアログを閉じるだけ
+        sm.currentConfirmState = null;
+        sm.saveState();
+        updateUI();
+      };
+
+      document.getElementById("confirmStartUnderFiveOK").onclick = () => {
+        sm.commitSelectedPlayers();
+        updateUI();
+      };
+
+      document.getElementById("confirmStartUnderFiveCancel").onclick = () => {
+        sm.currentConfirmState = null;
+        sm.saveState();
+        updateUI();
+      };
+
+      // 初期表示
       updateUI();
     });
   </script>

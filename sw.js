@@ -11,7 +11,6 @@ const FILES_TO_CACHE = [
   "./sw.js",
 
   // JSON config
-  "./config/game.json",
   "./config/ui.json",
   "./config/sound.json",
   "./config/teams.json",

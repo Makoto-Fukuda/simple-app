@@ -1,7 +1,7 @@
 {
   "teams": {
     "teamA": {
-      "name": "",
+      "name": "RED",
       "color": "red",
       "teamFouls": 0,
       "players": [],
@@ -10,7 +10,7 @@
     },
 
     "teamB": {
-      "name": "",
+      "name": "BLUE",
       "color": "blue",
       "teamFouls": 0,
       "players": [],

@@ -1,23 +1,21 @@
 {
-  "orientation": "portrait",
-
   "layout": {
     "portrait": {
-      "teamButtons": "top_bottom",
-      "jerseyList": "vertical",
-      "confirmDialog": "center"
+      "teamButtons": "center_big",
+      "utilityButtons": "bottom_right",
+      "playerList": "grid"
     },
     "landscape": {
-      "teamButtons": "left_right",
-      "jerseyList": "horizontal",
-      "confirmDialog": "center"
+      "teamButtons": "left_right_big",
+      "utilityButtons": "bottom_right",
+      "playerList": "grid_horizontal"
     }
   },
 
   "theme": {
     "colors": {
-      "teamRed": "#FF6B6B",
-      "teamBlue": "#4D9FFF",
+      "teamRed": "#e74c3c",
+      "teamBlue": "#3498db",
       "yellow": "#FFD93D",
       "green": "#6BCB77",
       "purple": "#A66CFF",
@@ -30,11 +28,11 @@
   },
 
   "sound": {
-    "foulConfirm": "pon",
-    "fix": "pi",
-    "substitutionConfirm": "kyu",
-    "disqualified": "buzzer_short",
-    "quarterAdvance": "chime",
+    "foulConfirm": "sounds/add.mp3",
+    "fix": "sounds/reset.mp3",
+    "substitutionConfirm": "sounds/sub.mp3",
+    "disqualified": "sounds/buzzer.mp3",
+    "quarterAdvance": "sounds/chime.mp3",
     "muteOption": true
   }
 }

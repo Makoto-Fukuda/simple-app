@@ -2,15 +2,15 @@
   "game": {
     "transitions": {
       "preGame": {
-        "startGame": "inGame"
+        "startGame": "preQuarter"
+      },
+      "preQuarter": {
+        "startQuarter": "inGame"
       },
       "inGame": {
         "halfTime": "halfTime",
         "endQuarter": "preQuarter",
         "endGame": "postGame"
-      },
-      "preQuarter": {
-        "startQuarter": "inGame"
       },
       "halfTime": {
         "resume": "preQuarter",
@@ -18,7 +18,7 @@
       },
       "postGame": {
         "reset": "preGame",
-        "startOT": "inGame"
+        "startOT": "preQuarter"
       }
     }
   },
@@ -26,7 +26,8 @@
   "operation": {
     "modes": {
       "foulMode": true,
-      "substitutionMode": true
+      "substitutionMode": true,
+      "listView": true
     },
     "transitions": {
       "foulMode": {
@@ -34,6 +35,9 @@
       },
       "substitutionMode": {
         "confirm": "confirmSubstitution"
+      },
+      "listView": {
+        "close": "inGame"
       }
     }
   },
@@ -47,6 +51,18 @@
       "confirmSubstitution": {
         "ok": "inGame",
         "fix": "substitutionMode"
+      },
+      "confirmStartUnderFive": {
+        "ok": "inGame",
+        "cancel": "preQuarter"
+      },
+      "confirmCancelGame": {
+        "ok": "postGame",
+        "cancel": "inGame"
+      },
+      "confirmBack": {
+        "ok": "preQuarter",
+        "cancel": "inGame"
       }
     }
   },
@@ -63,7 +79,10 @@
 
   "players": {
     "rules": {
-      "maxPersonalFouls": 5
+      "maxPersonalFouls": 5,
+      "minPlayers": 5,
+      "allowUnderMinPlayers": true,
+      "underMinPlayersConfirmSteps": 2
     },
     "players": []
   },
