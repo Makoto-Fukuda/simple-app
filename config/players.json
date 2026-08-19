@@ -1,0 +1,19 @@
+{
+  "players": [
+    {
+      "playerId": 0,
+      "playerName": "",
+      "teamSide": "A",
+      "personalFouls": 0,
+      "isDisqualified": false,
+      "isOnCourt": false,
+      "isBench": true
+    }
+  ],
+
+  "rules": {
+    "maxPersonalFouls": 5,
+    "disqualificationOnMaxFouls": true,
+    "onCourtCount": 5
+  }
+}

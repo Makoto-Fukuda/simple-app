@@ -1,25 +1,72 @@
-const CACHE_NAME = 'bfc-cache-v1';
-const urlsToCache = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon-DFC.png'
+// sw.js — Basket Foul Counter PWA Service Worker
+
+const CACHE_NAME = "bfc-cache-v1";
+
+// キャッシュするファイル一覧（誠のフォルダ構成に完全一致）
+const FILES_TO_CACHE = [
+  "./",
+  "./index.html",
+  "./style.css",
+  "./manifest.json",
+  "./sw.js",
+
+  // JS
+  "./stateMachine.js",
+
+  // config
+  "./config/game.json",
+  "./config/players.json",
+  "./config/sound.json",
+  "./config/stateMachine.json",
+  "./config/teams.json",
+  "./config/ui.json",
+
+  // icons
+  "./icons/icon-DFC.png"
 ];
 
-// インストール（初回読み込み時）
-self.addEventListener('install', event => {
+// --------------------------------------
+// インストール（初回キャッシュ）
+// --------------------------------------
+self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache);
+      return cache.addAll(FILES_TO_CACHE);
     })
   );
+  self.skipWaiting();
 });
 
-// オフライン対応（キャッシュ → ネットの順で返す）
-self.addEventListener('fetch', event => {
+// --------------------------------------
+// 有効化（古いキャッシュ削除）
+// --------------------------------------
+self.addEventListener("activate", event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      )
+    )
+  );
+  self.clients.claim();
+});
+
+// --------------------------------------
+// fetch（キャッシュ優先）
+// --------------------------------------
+self.addEventListener("fetch", event => {
   event.respondWith(
     caches.match(event.request).then(response => {
-      return response || fetch(event.request);
+      // キャッシュがあればそれを返す
+      if (response) {
+        return response;
+      }
+      // なければネットワーク
+      return fetch(event.request);
     })
   );
 });

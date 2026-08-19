@@ -1,0 +1,228 @@
+{
+  "game": {
+    "states": {
+      "preGame": {
+        "description": "試合前の状態。チーム名入力、初期設定を行う。",
+        "allowedActions": [
+          "inputTeamNames",
+          "startGame"
+        ],
+        "next": "preQuarter"
+      },
+      "preQuarter": {
+        "description": "各Q開始前の設定状態。出場選手5名を選択する。",
+        "allowedActions": [
+          "selectPlayers",
+          "startQuarter"
+        ],
+        "next": "inGame"
+      },
+      "inGame": {
+        "description": "試合中の状態。ファール操作、交代操作、次Qへの進行を行う。",
+        "allowedActions": [
+          "enterFoulMode",
+          "enterSubstitutionMode",
+          "enterQuarterControl"
+        ],
+        "next": [
+          "halfTime",
+          "inGame"
+        ]
+      },
+      "halfTime": {
+        "description": "ハーフタイム。チームファール自動クリア。Q4かどうかで分岐。",
+        "allowedActions": [
+          "autoClearTeamFouls",
+          "halfTimeNext"
+        ],
+        "next": {
+          "Q1toQ3": "preQuarter",
+          "Q4": "postGame"
+        }
+      },
+      "postGame": {
+        "description": "試合後の状態。終了または延長戦の選択を行う。",
+        "allowedActions": [
+          "finishGame",
+          "startOT"
+        ],
+        "next": [
+          "preGame",
+          "preQuarter"
+        ]
+      }
+    },
+    "transitions": {
+      "preGame": {
+        "startGame": "preQuarter"
+      },
+      "preQuarter": {
+        "startQuarter": "inGame"
+      },
+      "inGame": {
+        "advanceQuarter": "halfTime"
+      },
+      "halfTime": {
+        "halfTimeNext_Q1toQ3": "preQuarter",
+        "halfTimeNext_Q4": "postGame"
+      },
+      "postGame": {
+        "finishGame": "preGame",
+        "startOT": "preQuarter"
+      }
+    }
+  },
+
+  "operation": {
+    "modes": {
+      "foul": {
+        "description": "ファール操作モード。赤/青選択 → ゼッケン選択 → 確認画面へ進む。",
+        "entryFrom": "inGame",
+        "allowedActions": [
+          "selectTeamColor",
+          "selectJerseyNumber",
+          "openConfirmFoul"
+        ],
+        "next": "confirmFoul"
+      },
+      "substitution": {
+        "description": "交代操作モード。出場 → 控え選択 → 確認画面へ進む。",
+        "entryFrom": "inGame",
+        "allowedActions": [
+          "selectOnCourtPlayer",
+          "selectBenchPlayer",
+          "openConfirmSubstitution"
+        ],
+        "next": "confirmSubstitution"
+      },
+      "quarterControl": {
+        "description": "次のクォーターへ進む操作モード。halfTime へ遷移する。",
+        "entryFrom": "inGame",
+        "allowedActions": [
+          "advanceQuarter"
+        ],
+        "next": "halfTime"
+      }
+    },
+    "transitions": {
+      "foul": {
+        "selectTeamColor": "foul",
+        "selectJerseyNumber": "foul",
+        "openConfirmFoul": "confirmFoul"
+      },
+      "substitution": {
+        "selectOnCourtPlayer": "substitution",
+        "selectBenchPlayer": "substitution",
+        "openConfirmSubstitution": "confirmSubstitution"
+      },
+      "quarterControl": {
+        "advanceQuarter": "halfTime"
+      }
+    }
+  },
+
+  "confirm": {
+    "states": {
+      "confirmFoul": {
+        "description": "ファール確認画面。加算後ファール数を表示し、OKまたは修正を選択する。",
+        "allowedActions": [
+          "confirmFoulOK",
+          "confirmFoulFix"
+        ],
+        "next": {
+          "OK": "inGame",
+          "Fix": "foul"
+        }
+      },
+      "confirmSubstitution": {
+        "description": "交代確認画面。出場→控えの交代を確定する。",
+        "allowedActions": [
+          "confirmSubstitutionOK"
+        ],
+        "next": "inGame"
+      }
+    },
+    "transitions": {
+      "confirmFoul": {
+        "confirmFoulOK": "inGame",
+        "confirmFoulFix": "foul"
+      },
+      "confirmSubstitution": {
+        "confirmSubstitutionOK": "inGame"
+      }
+    }
+  },
+
+  "teams": {
+    "structure": {
+      "teamA": {
+        "name": "",
+        "color": "red",
+        "teamFouls": 0,
+        "players": []
+      },
+      "teamB": {
+        "name": "",
+        "color": "blue",
+        "teamFouls": 0,
+        "players": []
+      }
+    },
+    "rules": {
+      "teamFoulsResetEachQuarter": true,
+      "maxTeamFoulsPerQuarter": 5
+    }
+  },
+
+  "players": {
+    "structure": {
+      "player": {
+        "jerseyNumber": 0,
+        "fouls": 0,
+        "isDisqualified": false,
+        "isOnCourt": false
+      }
+    },
+    "rules": {
+      "maxPersonalFouls": 5,
+      "disqualificationOnMaxFouls": true,
+      "onCourtCount": 5
+    }
+  },
+
+  "ui": {
+    "orientation": "portrait",
+    "layoutPortrait": {
+      "teamButtons": "top/bottom",
+      "jerseyList": "vertical",
+      "confirmDialog": "center"
+    },
+    "layoutLandscape": {
+      "teamButtons": "left/right",
+      "jerseyList": "horizontal",
+      "confirmDialog": "center"
+    },
+    "theme": {
+      "colors": {
+        "red": "#FF6B6B",
+        "blue": "#4D9FFF",
+        "yellow": "#FFD93D",
+        "green": "#6BCB77",
+        "purple": "#A66CFF",
+        "backgroundLight": "#FAFAFA",
+        "backgroundDark": "#F0F0F0",
+        "disqualified": "#FF3B3B"
+      },
+      "font": "Rounded M+ / Nunito / Quicksand",
+      "iconStyle": "丸みのあるポップ系"
+    },
+    "sound": {
+      "foulConfirm": "ポン",
+      "fix": "ピッ",
+      "substitutionConfirm": "キュッ",
+      "disqualified": "短いブザー",
+      "quarterAdvance": "チャイム",
+      "muteOption": true
+    }
+  }
+}

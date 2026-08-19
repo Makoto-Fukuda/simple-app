@@ -1,0 +1,134 @@
+/* ================================
+   基本レイアウト
+================================ */
+body {
+  font-family: "Rounded M+", sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  background: #FAFAFA;
+  color: #333;
+}
+
+.hidden {
+  display: none;
+}
+
+.screen {
+  padding: 20px;
+}
+
+.mode {
+  margin-top: 20px;
+}
+
+/* ================================
+   ボタン
+================================ */
+button {
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #4D9FFF;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* 赤チーム / 青チームボタン */
+.teamSelect[data-team="A"] {
+  background: #FF6B6B;
+}
+
+.teamSelect[data-team="B"] {
+  background: #4D9FFF;
+}
+
+/* ================================
+   選手リスト
+================================ */
+#jerseyList,
+#onCourtList,
+#benchList,
+#playerSelectArea {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.playerItem {
+  padding: 10px 15px;
+  border-radius: 8px;
+  background: #F0F0F0;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.playerItem.onCourt {
+  background: #6BCB77;
+  color: white;
+}
+
+.playerItem.bench {
+  background: #FFD93D;
+}
+
+/* 退場した選手 */
+.playerItem.disqualified {
+  background: #FF3B3B;
+  color: white;
+}
+
+/* ================================
+   ダイアログ（ConfirmState）
+================================ */
+.dialog {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  width: 80%;
+  max-width: 350px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.dialog h3 {
+  margin-top: 0;
+}
+
+/* ================================
+   レスポンシブ（縦横対応）
+================================ */
+@media (orientation: landscape) {
+  body {
+    padding: 10px;
+  }
+
+  .screen {
+    padding: 10px;
+  }
+
+  #inGame {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .mode {
+    width: 45%;
+  }
+}

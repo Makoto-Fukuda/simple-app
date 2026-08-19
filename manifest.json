@@ -1,16 +1,19 @@
 {
   "name": "Basket Foul Counter",
   "short_name": "BFC",
+  "start_url": "/simple-app/",
+  "scope": "/simple-app/",
   "display": "standalone",
-  "start_url": "./",
+  "background_color": "#FAFAFA",
+  "theme_color": "#4D9FFF",
   "icons": [
     {
-      "src": "icon-DFC.png",
+      "src": "icons/icon-DFC.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-DFC.png",
+      "src": "icons/icon-DFC.png",
       "sizes": "512x512",
       "type": "image/png"
     }

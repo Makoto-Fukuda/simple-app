@@ -1,0 +1,20 @@
+{
+  "mute": false,
+
+  "files": {
+    "foulConfirm": "sounds/foul_confirm.mp3",
+    "fix": "sounds/fix.mp3",
+    "substitutionConfirm": "sounds/substitution_confirm.mp3",
+    "disqualified": "sounds/disqualified_buzzer.mp3",
+    "quarterAdvance": "sounds/quarter_chime.mp3"
+  },
+
+  "volume": {
+    "master": 0.8,
+    "foulConfirm": 1.0,
+    "fix": 0.7,
+    "substitutionConfirm": 0.9,
+    "disqualified": 1.0,
+    "quarterAdvance": 0.8
+  }
+}

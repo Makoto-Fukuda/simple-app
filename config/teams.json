@@ -1,0 +1,27 @@
+{
+  "teams": {
+    "teamA": {
+      "name": "",
+      "color": "red",
+      "teamFouls": 0,
+      "players": [],
+      "onCourt": [],
+      "bench": []
+    },
+
+    "teamB": {
+      "name": "",
+      "color": "blue",
+      "teamFouls": 0,
+      "players": [],
+      "onCourt": [],
+      "bench": []
+    }
+  },
+
+  "rules": {
+    "teamFoulsResetEachQuarter": true,
+    "maxTeamFoulsPerQuarter": 5,
+    "onCourtCount": 5
+  }
+}

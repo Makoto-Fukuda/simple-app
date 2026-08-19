@@ -1,0 +1,40 @@
+{
+  "orientation": "portrait",
+
+  "layout": {
+    "portrait": {
+      "teamButtons": "top_bottom",
+      "jerseyList": "vertical",
+      "confirmDialog": "center"
+    },
+    "landscape": {
+      "teamButtons": "left_right",
+      "jerseyList": "horizontal",
+      "confirmDialog": "center"
+    }
+  },
+
+  "theme": {
+    "colors": {
+      "teamRed": "#FF6B6B",
+      "teamBlue": "#4D9FFF",
+      "yellow": "#FFD93D",
+      "green": "#6BCB77",
+      "purple": "#A66CFF",
+      "backgroundLight": "#FAFAFA",
+      "backgroundDark": "#F0F0F0",
+      "disqualified": "#FF3B3B"
+    },
+    "font": "Rounded M+",
+    "iconStyle": "rounded_pop"
+  },
+
+  "sound": {
+    "foulConfirm": "pon",
+    "fix": "pi",
+    "substitutionConfirm": "kyu",
+    "disqualified": "buzzer_short",
+    "quarterAdvance": "chime",
+    "muteOption": true
+  }
+}
