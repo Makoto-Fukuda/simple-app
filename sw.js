@@ -9,12 +9,16 @@ const FILES_TO_CACHE = [
   "./style.css",
   "./manifest.json",
   "./sw.js",
-  "./stateMachine.js",
+
+  // JSON config
   "./config/game.json",
   "./config/ui.json",
   "./config/sound.json",
   "./config/teams.json",
   "./config/players.json",
+  "./config/stateMachine.json",   // ← 修正ポイント
+
+  // icons
   "./icons/icon-192.png",
   "./icons/icon-512.png"
 ];
@@ -55,11 +59,9 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", event => {
   event.respondWith(
     caches.match(event.request).then(response => {
-      // キャッシュがあればそれを返す
       if (response) {
         return response;
       }
-      // なければネットワーク
       return fetch(event.request);
     })
   );
