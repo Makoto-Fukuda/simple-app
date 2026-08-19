@@ -82,82 +82,114 @@
       const players = await (await fetch("./config/players.json")).json();
       const stateMachineConfig = await (await fetch("./config/stateMachine.json")).json();
 
+      console.log("[DEBUG] Loaded stateMachine.json:", stateMachineConfig);
+
       return { game, ui, sound, teams, players, stateMachineConfig };
     }
 
     loadAllConfigs().then(cfg => {
       const sm = new StateMachine(cfg.stateMachineConfig);
 
+      console.log("[DEBUG] Initial StateMachine state:", sm.getState());
+
       function updateUI() {
         const st = sm.getState();
+        console.log("[DEBUG] updateUI() called. Current state:", st);
 
+        // GameState
         document.querySelectorAll(".screen").forEach(s => s.classList.add("hidden"));
+        console.log("[DEBUG] Showing screen:", st.game);
         document.getElementById(st.game).classList.remove("hidden");
 
+        // OperationMode
         document.querySelectorAll(".mode").forEach(m => m.classList.add("hidden"));
         if (st.operation) {
+          console.log("[DEBUG] Showing operation mode:", st.operation + "Mode");
           document.getElementById(st.operation + "Mode").classList.remove("hidden");
         }
 
+        // ConfirmState
         document.querySelectorAll(".dialog").forEach(d => d.classList.add("hidden"));
         if (st.confirm) {
+          console.log("[DEBUG] Showing confirm dialog:", st.confirm);
           document.getElementById(st.confirm).classList.remove("hidden");
         }
       }
 
       // GameState
       document.getElementById("startGameBtn").onclick = () => {
+        console.log("[DEBUG] startGameBtn clicked");
         sm.transitionGame("startGame");
+        console.log("[DEBUG] After transitionGame(startGame):", sm.getState());
         updateUI();
       };
 
       document.getElementById("startQuarterBtn").onclick = () => {
+        console.log("[DEBUG] startQuarterBtn clicked");
         sm.transitionGame("startQuarter");
+        console.log("[DEBUG] After transitionGame(startQuarter):", sm.getState());
         updateUI();
       };
 
       document.getElementById("advanceQuarterBtn").onclick = () => {
+        console.log("[DEBUG] advanceQuarterBtn clicked");
         sm.transitionGame("endQuarter");
+        console.log("[DEBUG] After transitionGame(endQuarter):", sm.getState());
         updateUI();
       };
 
       document.getElementById("halfTimeNextBtn").onclick = () => {
+        console.log("[DEBUG] halfTimeNextBtn clicked");
         sm.transitionGame("resume");
+        console.log("[DEBUG] After transitionGame(resume):", sm.getState());
         updateUI();
       };
 
       document.getElementById("finishGameBtn").onclick = () => {
+        console.log("[DEBUG] finishGameBtn clicked");
         sm.transitionGame("endGame");
+        console.log("[DEBUG] After transitionGame(endGame):", sm.getState());
         updateUI();
       };
 
       document.getElementById("startOTBtn").onclick = () => {
+        console.log("[DEBUG] startOTBtn clicked");
         sm.transitionGame("startOT");
+        console.log("[DEBUG] After transitionGame(startOT):", sm.getState());
         updateUI();
       };
 
-      // OperationMode（ファールモードに入ってから confirm）
+      // OperationMode
       document.querySelectorAll(".teamSelect").forEach(btn => {
         btn.onclick = () => {
+          console.log("[DEBUG] teamSelect clicked:", btn.dataset.team);
           sm.enterOperationMode("foulMode");
+          console.log("[DEBUG] After enterOperationMode(foulMode):", sm.getState());
           sm.transitionOperation("confirm");
+          console.log("[DEBUG] After transitionOperation(confirm):", sm.getState());
           updateUI();
         };
       });
 
       // ConfirmState
       document.getElementById("confirmFoulOK").onclick = () => {
+        console.log("[DEBUG] confirmFoulOK clicked");
         sm.transitionConfirm("ok");
+        console.log("[DEBUG] After transitionConfirm(ok):", sm.getState());
         updateUI();
       };
 
       document.getElementById("confirmFoulFix").onclick = () => {
+        console.log("[DEBUG] confirmFoulFix clicked");
         sm.transitionConfirm("fix");
+        console.log("[DEBUG] After transitionConfirm(fix):", sm.getState());
         updateUI();
       };
 
       document.getElementById("confirmSubstitutionOK").onclick = () => {
+        console.log("[DEBUG] confirmSubstitutionOK clicked");
         sm.transitionConfirm("ok");
+        console.log("[DEBUG] After transitionConfirm(ok):", sm.getState());
         updateUI();
       };
 
