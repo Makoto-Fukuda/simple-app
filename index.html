@@ -27,6 +27,9 @@
   <div id="inGame" class="screen hidden">
     <h2>試合中</h2>
 
+    <!-- ★ ファール操作ボタンを追加 -->
+    <button id="openFoulModeBtn">ファール操作</button>
+
     <div id="foulMode" class="mode hidden">
       <h3>ファール操作</h3>
       <button class="teamSelect" data-team="A">赤チーム</button>
@@ -159,12 +162,19 @@
         updateUI();
       };
 
-      // OperationMode
+      // ★ ファール操作モードを開くボタン
+      document.getElementById("openFoulModeBtn").onclick = () => {
+        console.log("[DEBUG] openFoulModeBtn clicked");
+        sm.enterOperationMode("foulMode");
+        console.log("[DEBUG] After enterOperationMode(foulMode):", sm.getState());
+        updateUI();
+      };
+
+      // OperationMode（チーム選択 → confirmFoul へ）
       document.querySelectorAll(".teamSelect").forEach(btn => {
         btn.onclick = () => {
           console.log("[DEBUG] teamSelect clicked:", btn.dataset.team);
-          sm.enterOperationMode("foulMode");
-          console.log("[DEBUG] After enterOperationMode(foulMode):", sm.getState());
+          // ここでは既に foulMode にいる前提なので confirm へ
           sm.transitionOperation("confirm");
           console.log("[DEBUG] After transitionOperation(confirm):", sm.getState());
           updateUI();
