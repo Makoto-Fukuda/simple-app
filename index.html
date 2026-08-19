@@ -107,8 +107,8 @@
         // OperationMode
         document.querySelectorAll(".mode").forEach(m => m.classList.add("hidden"));
         if (st.operation) {
-          console.log("[DEBUG] Showing operation mode:", st.operation + "Mode");
-          document.getElementById(st.operation + "Mode").classList.remove("hidden");
+          console.log("[DEBUG] Showing operation mode:", st.operation);
+          document.getElementById(st.operation).classList.remove("hidden");
         }
 
         // ConfirmState
