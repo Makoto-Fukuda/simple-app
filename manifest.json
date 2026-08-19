@@ -30,7 +30,9 @@
     {
       "src": "screenshots/mobile.png",
       "sizes": "720x1280",
-      "type": "image/png"
+      "type": "image/png",
+      "form_factor": "narrow"
     }
+
   ]
 }
