@@ -6,16 +6,20 @@ const CACHE_NAME = "bfc-cache-v1";
 const FILES_TO_CACHE = [
   "./",
   "./index.html",
-  "./style.css",
+
+  "./css/style.css",
+  "./js/app.js",
+
   "./manifest.json",
   "./sw.js",
 
-  // JSON config
-  "./config/ui.json",
-  "./config/sound.json",
-  "./config/teams.json",
-  "./config/players.json",
-  "./config/stateMachine.json",   // ← 修正ポイント
+  // 画面 HTML
+  "./screens/preQuarter.html",
+  "./screens/inGame.html",
+  "./screens/postQuarter.html",
+
+  // 共通コンポーネント
+  "./components/dialog.html",
 
   // icons
   "./icons/icon-192.png",

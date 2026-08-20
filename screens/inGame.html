@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>試合中</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div class="page">
+
+    <h1 class="title" id="quarterTitle">第1Q ファール入力</h1>
+
+    <!-- チーム選択 -->
+    <div class="team-switch">
+        <button class="team-btn team-red" onclick="selectTeam('red')">赤チーム</button>
+        <button class="team-btn team-blue" onclick="selectTeam('blue')">青チーム</button>
+    </div>
+
+    <!-- 出場選手 -->
+    <div class="player-section">
+        <p class="player-label">出場選手</p>
+        <div class="player-row" id="onCourtList"></div>
+    </div>
+
+    <!-- 個人ファール数 -->
+    <div class="foul-section">
+        <p class="player-label">個人ファール数</p>
+        <div class="foul-row" id="foulList"></div>
+    </div>
+
+    <!-- チームファール数 -->
+    <div class="team-foul-count">
+        <span class="foul-count red">A: <span id="teamAFoul">0</span></span>
+        <span class="foul-count blue">B: <span id="teamBFoul">0</span></span>
+    </div>
+
+</div>
+
+<!-- 固定ボタンバー -->
+<div class="fixed-footer">
+    <button class="footer-btn footer-back" onclick="onBackFromInGame()">戻る</button>
+    <button class="footer-btn footer-clear" onclick="onClearSelection()">選択クリア</button>
+    <button class="footer-btn footer-end" onclick="onEndGame()">試合中止</button>
+</div>
+
+<!-- 共通JS -->
+<script src="../js/app.js"></script>
+
+</body>
+</html>

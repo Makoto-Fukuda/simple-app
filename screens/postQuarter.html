@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>第1Q 終了</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div class="page">
+
+    <h1 class="title" id="quarterTitle">第1Q 終了</h1>
+
+    <!-- スコア表示 -->
+    <div class="score-section">
+        <div class="score-box red-score">
+            <p class="team-name">赤チーム</p>
+            <p class="score-value" id="scoreRed">0</p>
+        </div>
+        <div class="score-box blue-score">
+            <p class="team-name">青チーム</p>
+            <p class="score-value" id="scoreBlue">0</p>
+        </div>
+    </div>
+
+    <!-- チームファール数 -->
+    <div class="team-foul-count">
+        <span class="foul-count red">A: <span id="teamAFoul">0</span></span>
+        <span class="foul-count blue">B: <span id="teamBFoul">0</span></span>
+    </div>
+
+    <!-- 退場選手一覧 -->
+    <div class="player-section">
+        <p class="player-label">退場選手</p>
+        <div class="player-row" id="outGrid"></div>
+    </div>
+
+</div>
+
+<!-- 固定ボタンバー -->
+<div class="fixed-footer">
+    <button class="footer-btn footer-back" onclick="navigateTo('../index.html')">戻る</button>
+    <button class="footer-btn footer-next" onclick="nextQuarter()">次Qへ</button>
+    <button class="footer-btn footer-end" onclick="onEndGame()">試合終了</button>
+</div>
+
+<!-- 共通JS -->
+<script src="../js/app.js"></script>
+
+</body>
+</html>

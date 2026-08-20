@@ -1,8 +1,8 @@
 {
   "name": "Basket Foul Counter",
   "short_name": "BFC",
-  "start_url": "/simple-app/",
-  "scope": "/simple-app/",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#FAFAFA",
   "theme_color": "#4D9FFF",
@@ -18,21 +18,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-
-  "screenshots": [
-    {
-      "src": "screenshots/desktop.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
-    },
-    {
-      "src": "screenshots/mobile.png",
-      "sizes": "720x1280",
-      "type": "image/png",
-      "form_factor": "narrow"
-    }
-
   ]
 }
