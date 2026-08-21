@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>記録参照</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- タイトル -->
+    <h1 class="title">記録参照</h1>
+
+    <!-- Q切替ボタン -->
+    <div id="quarterButtons" class="quarter-buttons">
+        <!-- JS が以下のようなボタンを生成する：
+        <button data-quarter="1">Q1</button>
+        <button data-quarter="2">Q2</button>
+        ...
+        <button data-quarter="all">全体</button>
+        -->
+    </div>
+
+    <!-- チーム別表示 -->
+    <div class="record-view-container">
+
+        <!-- 赤チーム -->
+        <div class="team-block red-team-block">
+            <h2 class="team-title">赤チーム</h2>
+            <div id="redTeamView" class="team-view">
+                <!-- JS が選手一覧を生成 -->
+            </div>
+        </div>
+
+        <!-- 青チーム -->
+        <div class="team-block blue-team-block">
+            <h2 class="team-title">青チーム</h2>
+            <div id="blueTeamView" class="team-view">
+                <!-- JS が選手一覧を生成 -->
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- 固定ボタンバー -->
+<div class="fixed-footer">
+
+    <!-- preGame へ戻る -->
+    <button id="backBtn" class="footer-btn footer-back">
+        試合設定へ戻る
+    </button>
+
+    <!-- 保存データから再開 -->
+    <button id="resumeBtn" class="footer-btn footer-resume">
+        試合を再開する
+    </button>
+
+</div>
+
+</body>
+</html>

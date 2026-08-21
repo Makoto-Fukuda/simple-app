@@ -1,40 +1,61 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>ファールカウンタ</title>
-    <link rel="stylesheet" href="css/style.css">
+
+    <!-- PWA -->
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#4D9FFF" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/style.css" />
 </head>
+
 <body>
 
-<div class="page">
-
-    <h1 class="title">ファールカウンタ</h1>
-
-    <div class="menu-section">
-
-        <!-- 第1Q開始前へ -->
-        <button class="menu-btn"
-                onclick="navigateTo('screens/preQuarter.html')">
-            第1Q 開始前へ
-        </button>
-
-        <!-- 試合中画面へ -->
-        <button class="menu-btn"
-                onclick="navigateTo('screens/inGame.html')">
-            試合中画面へ
-        </button>
-
-        <!-- 第1Q終了画面へ -->
-        <button class="menu-btn"
-                onclick="navigateTo('screens/postQuarter.html')">
-            第1Q 終了画面へ
-        </button>
-
+    <!-- 起動時の簡易ローディング（昨日版の良い点を継承） -->
+    <div class="page" id="initialLoading">
+        <h1 class="title">ファールカウンタ</h1>
+        <p class="loading-text">読み込み中...</p>
     </div>
 
-</div>
+    <!-- SPA の描画領域 -->
+    <div id="app" style="display:none;"></div>
 
-<script src="js/app.js"></script>
+    <!-- 共通ダイアログ -->
+    <div id="dialogOverlay" class="dialog-overlay" style="display:none;">
+        <div class="dialog-box">
+            <p id="dialogMessage"></p>
+            <button id="dialogOkButton">OK</button>
+        </div>
+    </div>
+
+    <!-- JS（モジュール） -->
+    <script type="module">
+        import { renderScreen } from "./js/router.js";
+
+        // 初期画面描画
+        window.addEventListener("DOMContentLoaded", () => {
+
+            // 昨日のローディング画面を少しだけ表示してから SPA に切り替え
+            setTimeout(() => {
+                document.getElementById("initialLoading").style.display = "none";
+                document.getElementById("app").style.display = "block";
+
+                renderScreen();  // preGame を描画
+            }, 300); // 300ms の軽い演出（昨日版の雰囲気を継承）
+
+            // Service Worker 登録
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker.register("./sw.js").catch(err => {
+                    console.error("Service Worker registration failed:", err);
+                });
+            }
+        });
+    </script>
+
 </body>
 </html>

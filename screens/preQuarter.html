@@ -1,42 +1,31 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>第1Q 開始前</title>
-    <link rel="stylesheet" href="../css/style.css">
-</head>
-<body>
-
 <div class="page">
 
-    <h1 class="title" id="quarterTitle">第1Q 開始前</h1>
+    <h1 id="quarterLabel" class="title">第 ?Q 試合中</h1>
 
-    <!-- チーム選択 -->
-    <div class="team-switch">
-        <button class="team-btn team-red" onclick="selectTeam('red')">赤チーム</button>
-        <button class="team-btn team-blue" onclick="selectTeam('blue')">青チーム</button>
+    <div class="team-select">
+        <button class="team-btn red-team" id="teamA">Aチーム</button>
+        <button class="team-btn blue-team" id="teamB">Bチーム</button>
     </div>
 
-    <!-- 出場選手 -->
     <div class="player-section">
-        <p class="player-label">出場選手</p>
-        <div class="player-row" id="starterList"></div>
+        <p class="player-label">赤チーム選択中の出場選手（最大5名）</p>
+        <div class="player-row fixed-red" id="redOnCourt"></div>
 
-        <p class="player-label">控え選手</p>
-        <div class="player-row" id="benchList"></div>
+        <p class="player-label">青チーム選択中の出場選手（最大5名）</p>
+        <div class="player-row fixed-blue" id="blueOnCourt"></div>
+    </div>
+
+    <div class="player-section">
+        <p class="player-label">控え選手一覧</p>
+        <div id="reserveArea" class="bench-grid teamA-bg" style="max-height: 400px; overflow-y: auto;"></div>
+    </div>
+
+    <!-- 固定ボタン（試合開始前／選手交代モード切替対応） -->
+    <div class="fixed-footer" id="preQuarterFooter">
+        <button id="backBtn" class="footer-btn footer-back">戻る</button>
+        <button id="startQuarterBtn" class="footer-btn footer-next">次のクオーターを開始</button>
+        <button id="abortBtn" class="footer-btn footer-end">試合を終了する</button>
+        <button id="returnToGameBtn" class="footer-btn footer-next hidden">試合に戻る</button>
     </div>
 
 </div>
-
-<!-- 固定ボタンバー -->
-<div class="fixed-footer">
-    <button class="footer-btn footer-back" onclick="navigateTo('../index.html')">戻る</button>
-    <button class="footer-btn footer-next" onclick="startGame()">試合開始</button>
-    <button class="footer-btn footer-end" onclick="onEndGame()">試合中止</button>
-</div>
-
-<!-- 共通JS -->
-<script src="../js/app.js"></script>
-
-</body>
-</html>

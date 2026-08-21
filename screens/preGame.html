@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>試合前画面（preGame）</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<div id="app">
+
+    <div class="page">
+
+        <h1 class="title">試合前画面（preGame）</h1>
+
+        <div class="team-input-section">
+
+            <!-- 試合名（必須） -->
+            <div class="team-input-row">
+                <label for="matchTitle" class="team-label">試合名</label>
+                <input type="text" id="matchTitle" class="team-input" placeholder="例：○○大会 準決勝">
+            </div>
+
+            <!-- 赤チーム名（任意） -->
+            <div class="team-input-row">
+                <label for="teamAName" class="team-label">赤チーム名（任意）</label>
+                <input type="text" id="teamAName" class="team-input" placeholder="未入力時は teamRED">
+            </div>
+
+            <!-- 青チーム名（任意） -->
+            <div class="team-input-row">
+                <label for="teamBName" class="team-label">青チーム名（任意）</label>
+                <input type="text" id="teamBName" class="team-input" placeholder="未入力時は teamBLUE">
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="fixed-footer">
+        <button id="startGameBtn" class="footer-btn footer-next">試合開始</button>
+        <button id="recordViewBtn" class="footer-btn footer-clear">記録参照</button>
+        <button id="clearRegisterBtn" class="footer-btn footer-end">登録クリア</button>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>試合終了</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- 試合終了表示（JSが書き換える） -->
+    <h1 id="quarterLabel" class="title">試合終了</h1>
+
+    <!-- 最終結果表示 -->
+    <div class="score-section">
+        <div class="score-box red-score">
+            <p class="team-name">赤チーム</p>
+            <p class="score-value" id="scoreRed">0</p>
+        </div>
+        <div class="score-box blue-score">
+            <p class="team-name">青チーム</p>
+            <p class="score-value" id="scoreBlue">0</p>
+        </div>
+    </div>
+
+    <!-- チームファール数 -->
+    <div class="team-foul-count">
+        <span class="foul-count red">A: <span id="teamAFoul">0</span></span>
+        <span class="foul-count blue">B: <span id="teamBFoul">0</span></span>
+    </div>
+
+    <!-- 全クオータのタブ（recordViewMode で使うが postGame では非操作） -->
+    <div class="quarter-tabs">
+        <p class="quarter-tabs-label">全クオータの結果</p>
+        <div id="quarterTabs" class="quarter-tabs-container">
+            <!-- recordViewMode と同じ構造だが、postGame では閲覧専用 -->
+        </div>
+    </div>
+
+    <!-- 最終ファール一覧（閲覧専用） -->
+    <div class="player-section">
+        <p class="player-label">最終ファール一覧</p>
+        <div class="player-row" id="finalFoulList">
+            <!-- JS が生成する（recordViewMode と同じ構造） -->
+        </div>
+    </div>
+
+</div>
+
+<!-- 固定ボタンバー -->
+<div class="fixed-footer">
+
+    <!-- 保存（JSON確定） -->
+    <button id="saveBtn" class="footer-btn footer-save">
+        試合データを保存
+    </button>
+
+    <!-- 記録参照へ -->
+    <button id="recordViewBtn" class="footer-btn footer-sub">
+        記録を見る
+    </button>
+
+    <!-- preGame へ戻る -->
+    <button id="backBtn" class="footer-btn footer-back">
+        試合設定へ戻る
+    </button>
+
+</div>
+
+</body>
+</html>

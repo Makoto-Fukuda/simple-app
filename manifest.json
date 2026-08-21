@@ -1,7 +1,7 @@
 {
   "name": "Basket Foul Counter",
   "short_name": "BFC",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#FAFAFA",
